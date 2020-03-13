@@ -39,6 +39,16 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion camCenter;
     #endregion
 
+    #region ViewBobbing
+    public Transform weaponParent;
+
+    private Vector3 targetWeaponBobPosition;
+    private Vector3 weaponParentOrigin;  
+
+    private float movementCounter; //Zeit, die der Spieler in einer Bewegung am Stueck war
+    private float idleCounter; //Zeit, die der Spieler nicht in einer Bewegung am Stueck war
+    #endregion
+
     #endregion
 
     #region Monobehaviour Callbacks
@@ -49,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
         Camera.main.enabled = false;
         camCenter = pCam.localRotation;
         rig = GetComponent<Rigidbody>();
+        weaponParentOrigin = weaponParent.localPosition;
     }
 
     void Update()
@@ -79,6 +90,28 @@ public class PlayerMovement : MonoBehaviour
         {
             rig.AddForce(Vector3.up * jumpForce);
         }
+
+
+        //ViewBobbing
+        if (hmove == 0 && vmove == 0)
+        {
+            ViewBob(idleCounter, 0.025f, 0.025f); //Atmung/Idle ViewBob
+            idleCounter += Time.deltaTime;
+            weaponParent.localPosition = Vector3.Lerp(weaponParent.localPosition, targetWeaponBobPosition, Time.deltaTime * 2f);
+        }
+        else if (!isSprinting)
+        {
+            ViewBob(movementCounter, 0.035f, 0.035f); //Bewegungs ViewBob
+            movementCounter += Time.deltaTime * 5.5f; //Doppelt so schnelle Bewegung
+            weaponParent.localPosition = Vector3.Lerp(weaponParent.localPosition, targetWeaponBobPosition, Time.deltaTime * 6f);
+        }
+        else
+        {
+            ViewBob(movementCounter, 0.15f, 0.075f); //Bewegungs ViewBob
+            movementCounter += Time.deltaTime * 9f; //Doppelt so schnelle Bewegung
+            weaponParent.localPosition = Vector3.Lerp(weaponParent.localPosition, targetWeaponBobPosition, Time.deltaTime * 10f);
+        }
+
     }
 
     void FixedUpdate() //FIXEDUpdate, um unabhaengig von der Leistung u. Verbindung des Clients wie gewollt zu laufen.(=> Multiplayer)
@@ -180,6 +213,11 @@ public class PlayerMovement : MonoBehaviour
                 cursorLocked = true;
             }
         }
+    }
+
+    void ViewBob(float _rate, float _xIntensity, float _yIntensity)
+    {
+        targetWeaponBobPosition = weaponParentOrigin + new Vector3(Mathf.Cos(_rate) * _xIntensity, Mathf.Sin(_rate * 2) * _yIntensity, 0); //*2 da sonst eine Kreisbewegung stattfinden wuerde
     }
     #endregion
 

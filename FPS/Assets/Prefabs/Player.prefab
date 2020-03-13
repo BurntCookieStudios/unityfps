@@ -371,6 +371,7 @@ MonoBehaviour:
   weapon: {fileID: 1981623956003932166}
   xSensitivity: 200
   ySensitivity: 200
+  weaponParent: {fileID: 1981623956003932166}
 --- !u!114 &8280732853662120316
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,5 +7,6 @@ public class Gun : ScriptableObject
 {
     public string name;
     public float firerate;
+    public float aimSpeed; //Schnelligkeit in Sight / Scope einer Waffe zu gehen (bsp.: Sniper langsamer als Pistole)
     public GameObject prefab;
 }
