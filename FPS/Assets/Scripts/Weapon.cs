@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    #region Variablen
+
     public Gun[] loadout; //Erst-, Zweit-, Drittwaffe
     public Transform weaponParent;
 
     private GameObject currentWeapon;
+
+    #endregion
+
+    #region Monobehaviour Callbacks
 
     void Start()
     {
@@ -19,6 +25,10 @@ public class Weapon : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1)) Equip(0);
     }
 
+    #endregion
+
+    #region Methoden
+
     void Equip(int _i)
     {
         if (currentWeapon != null) Destroy(currentWeapon); //ausgeruestete Waffe vorm Equip einer anderen entfernen.
@@ -29,4 +39,6 @@ public class Weapon : MonoBehaviour
 
         currentWeapon = newEquipment;
     }
+
+    #endregion
 }

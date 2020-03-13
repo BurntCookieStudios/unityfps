@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     #region Bewegung - Variablen
     //Bewegung
     private Rigidbody rig;
-    private float moveSpeed = 180f;
+    private float moveSpeed = 200f;
 
     //Sprint
     private float sprintModifier = 1.5f;
@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public Camera normalCam;
 
     //Jump
-    private float jumpForce = 100f;
+    private float jumpForce = 20f;
     public LayerMask ground;
     public Transform groundDetector; //Punkt von dem geprueft werden soll, ob er sich auf dem Boden befindet.
     #endregion
@@ -41,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region Monobehaviour Callbacks
+
     private void Start()
     {
         baseFOV = normalCam.fieldOfView;
@@ -55,9 +57,32 @@ public class PlayerMovement : MonoBehaviour
         SetX();
 
         UpdateLockCursor();
+
+        //Axis, Controls, States ebenfalls in Update, sowie auch in fixedUpdate um keine "Loecher" zuhaben, also eine durchgaengige Reaktion
+        //Axis
+        float hmove = Input.GetAxisRaw("Horizontal"); //RAW verhindert ein "Rutsch-Gefuehl"
+        float vmove = Input.GetAxisRaw("Vertical");
+
+        //Controls
+        bool sprint = Input.GetKey(KeyCode.LeftShift);
+        bool jump = Input.GetKey(KeyCode.Space);
+        
+        //States
+        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.4f, ground);
+        bool isJumping = jump && isGrounded; //kann nur Springen, wenn der Spieler auf dem Boden steht.
+        bool isSprinting = sprint && vmove > 0 && !isJumping && isGrounded; //Später eventuell ändern, bspw. kann man SPÄTER nicht sprinten wenn man nicht genug Stamina hat. 
+                                                                            // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
+                                                                            //!isJumping um nicht beim Springen zu Sprinten 
+                                                                            //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
+        //Jumping:
+        if (isJumping)
+        {
+            rig.AddForce(Vector3.up * jumpForce);
+        }
     }
 
     void FixedUpdate() //FIXEDUpdate, um unabhaengig von der Leistung u. Verbindung des Clients wie gewollt zu laufen.(=> Multiplayer)
+                       //Movement in FixedUpdate, aufgrund der Dynamik 
     {
         //Axis
         float hmove = Input.GetAxisRaw("Horizontal"); //RAW verhindert ein "Rutsch-Gefuehl"
@@ -74,18 +99,8 @@ public class PlayerMovement : MonoBehaviour
                                                                             // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
                                                                             //!isJumping um nicht beim Springen zu Sprinten 
                                                                             //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
-
-
         //Weitere Variablen
         float adjustedSpeed = moveSpeed;
-
-
-        //Jumping:
-        if (isJumping)
-        {
-            rig.AddForce(Vector3.up * jumpForce);
-        }
-
 
         //Sprint: Verschnellerung + FOV Change
         if (isSprinting)
@@ -107,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
         targetVelocity.y = rig.velocity.y; //Ohne diese Zeile Code, funktioniert Springen nicht richtig, da bei "direction", der Y-Wert 0 gesetzt wird.
         rig.velocity = targetVelocity;
     }
+
+    #endregion
 
     #region Methoden
 

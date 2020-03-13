@@ -3875,12 +3875,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104428288}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1107461661 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1981623956003932166, guid: 57eb8a2b527a71c41a13fc2da6b0800a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1203152503}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1111519621
 GameObject:
   m_ObjectHideFlags: 0
@@ -4168,22 +4162,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 8280732853662120316, guid: 57eb8a2b527a71c41a13fc2da6b0800a,
-        type: 3}
-      propertyPath: loadout.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8280732853662120316, guid: 57eb8a2b527a71c41a13fc2da6b0800a,
-        type: 3}
-      propertyPath: weaponParent
-      value: 
-      objectReference: {fileID: 1107461661}
-    - target: {fileID: 8280732853662120316, guid: 57eb8a2b527a71c41a13fc2da6b0800a,
-        type: 3}
-      propertyPath: loadout.Array.data[0]
-      value: 
-      objectReference: {fileID: 909431690137418416, guid: 6590f3401e543774a8f4e62d4f91ce92,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57eb8a2b527a71c41a13fc2da6b0800a, type: 3}
 --- !u!1 &1241445156
