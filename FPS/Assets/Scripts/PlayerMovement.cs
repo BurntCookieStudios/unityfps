@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public Camera normalCam;
 
     //Jump
-    private float jumpForce = 425f;
+    private float jumpForce = 100f;
     public LayerMask ground;
     public Transform groundDetector; //Punkt von dem geprueft werden soll, ob er sich auf dem Boden befindet.
     #endregion
@@ -67,9 +67,12 @@ public class PlayerMovement : MonoBehaviour
         bool jump = Input.GetKey(KeyCode.Space);
 
         //States
-        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.1f, ground);
+        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.4f, ground);
         bool isJumping = jump && isGrounded; //kann nur Springen, wenn der Spieler auf dem Boden steht.
-        bool isSprinting = sprint && vmove > 0 && !isJumping && isGrounded; //Später eventuell ändern, bspw. kann man SPÄTER nicht sprinten wenn man nicht genug Stamina hat. // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten //!isJumping um nicht beim Springen zu Sprinten //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
+        bool isSprinting = sprint && vmove > 0 && !isJumping && isGrounded; //Später eventuell ändern, bspw. kann man SPÄTER nicht sprinten wenn man nicht genug Stamina hat. 
+                                                                            // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
+                                                                            //!isJumping um nicht beim Springen zu Sprinten 
+                                                                            //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
 
 
         //Weitere Variablen
@@ -87,7 +90,8 @@ public class PlayerMovement : MonoBehaviour
         if (isSprinting)
         {
             adjustedSpeed *= sprintModifier;
-            normalCam.fieldOfView = Mathf.Lerp(normalCam.fieldOfView, baseFOV * sprintFOVModifier, Time.deltaTime * 8f); //Sprint-Effekt //Mathf.Lerp: Uebergang von der normalen FOV zur veraenderten, damit kein Snapping entsteht.
+            normalCam.fieldOfView = Mathf.Lerp(normalCam.fieldOfView, baseFOV * sprintFOVModifier, Time.deltaTime * 8f); //Sprint-Effekt 
+                                                                                                                         //Mathf.Lerp: Uebergang von der normalen FOV zur veraenderten, damit kein Snapping entsteht.
         }
         else
             normalCam.fieldOfView = Mathf.Lerp(normalCam.fieldOfView, baseFOV, Time.deltaTime * 8f); ; //KEIN Sprint-Effekt //Mathf.Lerp: Uebergang von der veraenderten FOV zur normalen, damit kein Snapping entsteht.
@@ -97,7 +101,8 @@ public class PlayerMovement : MonoBehaviour
         direction.Normalize(); //findet eine Bewegung Horizontal und Vertical statt, wäre der Spieler in der Theorie doppelt so schnell; Vermieden wird dies durch ".Normalize()".
 
         //Bewegung
-        Vector3 targetVelocity = transform.TransformDirection(direction) * adjustedSpeed * Time.deltaTime; //transform.TransformDirection(), um in die Richtung zu laufen, wohin der Spieler schaut. //Time.deltaTime (siehe FixedUpdate())
+        Vector3 targetVelocity = transform.TransformDirection(direction) * adjustedSpeed * Time.deltaTime; //transform.TransformDirection(), um in die Richtung zu laufen, wohin der Spieler schaut. 
+                                                                                                           //Time.deltaTime (siehe FixedUpdate())
         targetVelocity.y = rig.velocity.y; //Ohne diese Zeile Code, funktioniert Springen nicht richtig, da bei "direction", der Y-Wert 0 gesetzt wird.
         rig.velocity = targetVelocity;
     }
