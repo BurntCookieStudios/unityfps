@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     //Umsehen
     public Transform player;
     public Transform pCam;
+    public Transform weapon;
 
     public float xSensitivity;
     public float ySensitivity;
@@ -125,6 +126,7 @@ public class PlayerMovement : MonoBehaviour
         {
             pCam.localRotation = delta;
         }
+        weapon.localRotation = pCam.localRotation;
     }
 
     /*
