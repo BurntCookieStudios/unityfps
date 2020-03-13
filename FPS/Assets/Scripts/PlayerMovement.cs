@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         baseFOV = normalCam.fieldOfView;
-        //Camera.main.enabled = false;
+        Camera.main.enabled = false;
         camCenter = pCam.localRotation;
         rig = GetComponent<Rigidbody>();
     }
