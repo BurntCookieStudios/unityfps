@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 256c1101f4f9a1e49bf69d398dce029a, type: 3}
+  m_Name: Simple Knife
+  m_EditorClassIdentifier: 
+  weaponType: 2
+  name: Simple Knife
+  firerate: 1
+  bloom: 0
+  recoil: 0
+  kickback: 0
+  aimSpeed: 0
+  prefab: {fileID: 909431690137418416, guid: 0aea0499d9f6fc3469e09e6ded02429f, type: 3}

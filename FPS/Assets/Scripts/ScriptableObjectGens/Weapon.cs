@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName="New Gun", menuName="Gun")]
-public class Gun : ScriptableObject
+[CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon")]
+public class Weapon : ScriptableObject
 {
+    public enum wType
+    {
+        Mainhand,
+        Offhand,
+        Meele,
+    }
+
+    public wType weaponType;
     public string name;
     public float firerate;
     public float bloom;

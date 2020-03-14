@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 399d02181087f874cac7100b08b911c9, type: 3}
+  m_Script: {fileID: 11500000, guid: 256c1101f4f9a1e49bf69d398dce029a, type: 3}
   m_Name: Hamada Type 1
   m_EditorClassIdentifier: 
+  weaponType: 1
   name: Hamada Type 1
   firerate: 0.15
   bloom: 20

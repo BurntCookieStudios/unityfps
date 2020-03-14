@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class Loadout : MonoBehaviour
 {
     #region Variablen
 
-    public Gun[] loadout; //Erst-, Zweit-, Drittwaffe
+    public Weapon[] loadout; //Erst-, Zweit-, Drittwaffe
     public Transform weaponParent;
 
     //Bulletholes, Particles on Gunshot impact
@@ -27,13 +27,25 @@ public class Weapon : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) Equip(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) Equip(1);
 
         if (currentWeapon)
         {
             Aim(Input.GetMouseButton(1));
             if (Input.GetMouseButtonDown(0) && currentCooldown <= 0)
             {
-                Shoot();
+                switch (loadout[currentIndex].weaponType)
+                {
+                    case Weapon.wType.Meele:
+                        break;
+                    case Weapon.wType.Offhand:
+                        Shoot();
+                        break;
+                    case Weapon.wType.Mainhand:
+                        Shoot();
+                        break;
+                }
+
             }
 
             //weapon position Dehnung: Waffe wird durch Bewegung zurueck auf den Ausgangspunkt gesetzt
