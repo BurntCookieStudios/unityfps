@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909431689882688616}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ADS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909431690040464212}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Hip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 909431690137418417}
   - component: {fileID: 3504035462929901685}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Hamada Type 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909431690582516541}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909431690861869743}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: States
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909431690870863499}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Ressources
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909431690912445567}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Design
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,6 +242,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 853b30a1b75d55544b97886dfd73a077, type: 2}
+    - target: {fileID: -4640264742112328441, guid: a95cce226aac4ac42a369c9d5f4dfca6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a95cce226aac4ac42a369c9d5f4dfca6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -312,10 +317,25 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.07
       objectReference: {fileID: 0}
+    - target: {fileID: -928208058369757064, guid: a95cce226aac4ac42a369c9d5f4dfca6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: a95cce226aac4ac42a369c9d5f4dfca6,
         type: 3}
       propertyPath: m_Name
       value: hamada type 1 pistol
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: a95cce226aac4ac42a369c9d5f4dfca6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 326680701022325867, guid: a95cce226aac4ac42a369c9d5f4dfca6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5767974960422501358, guid: a95cce226aac4ac42a369c9d5f4dfca6,
         type: 3}
