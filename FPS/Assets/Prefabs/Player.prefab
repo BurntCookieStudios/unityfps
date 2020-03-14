@@ -396,6 +396,8 @@ MonoBehaviour:
   canBeShotSurvace:
     serializedVersion: 2
     m_Bits: 823
+  shootVFXPrefab: {fileID: 1685874166552172, guid: e636c2bc146b7a741857b8b50c291ff9,
+    type: 3}
 --- !u!1 &1981623957317877638
 GameObject:
   m_ObjectHideFlags: 0

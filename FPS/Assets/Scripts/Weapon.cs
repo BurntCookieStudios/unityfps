@@ -15,7 +15,6 @@ public class Weapon : MonoBehaviour
     public GameObject hitBloodPrefab;
     public LayerMask canBeShotSurvace;
 
-
     private int currentIndex;
     private GameObject currentWeapon;
 
@@ -74,7 +73,7 @@ public class Weapon : MonoBehaviour
     private void Shoot()
     {
         Transform spawn = transform.Find("Cameras/Normal Camera"); //Raycast aus der Sicht des Spielers, um mittig yzu schiessen.
-                                                                   //Ort aus dem der Spieler schiesst.
+                                                                   //Ort aus dem der Spieler schiesst.     
 
         RaycastHit hit = new RaycastHit(); //Objekt, das von dem Raycast getroffen wird.
         if (Physics.Raycast(spawn.position, spawn.forward, out hit, 1000f, canBeShotSurvace))
@@ -87,7 +86,7 @@ public class Weapon : MonoBehaviour
             newImpactVFX.transform.LookAt(hit.point + hit.normal); //um aus Richtung des interagierten Objekts "zu gucken"
 
             Destroy(newHole, 5f); //nach 5 sekunden wird das Loch zerstoert
-            Destroy(newImpactVFX, 1f); //nach 5 sekunden wird das Loch zerstoert
+            Destroy(newImpactVFX, 1f); //nach 1 sekunden wird das Loch zerstoert
         }
 
     }
