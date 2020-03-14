@@ -387,6 +387,15 @@ MonoBehaviour:
   loadout:
   - {fileID: 11400000, guid: 50b9d95f85a936f4e84e327c583c7600, type: 2}
   weaponParent: {fileID: 1981623956003932166}
+  bulletholePrefab: {fileID: 5263835086978447957, guid: 2ce7de77319e94e4ea01dc403a127a04,
+    type: 3}
+  hitSurvacePrefab: {fileID: 1715429173108024, guid: dc1d5ca3304bfa943859960d5d1bb9b3,
+    type: 3}
+  hitBloodPrefab: {fileID: 1968586304485042, guid: 6c86c599d7bf3464eb4506d2584fbe57,
+    type: 3}
+  canBeShotSurvace:
+    serializedVersion: 2
+    m_Bits: 823
 --- !u!1 &1981623957317877638
 GameObject:
   m_ObjectHideFlags: 0
