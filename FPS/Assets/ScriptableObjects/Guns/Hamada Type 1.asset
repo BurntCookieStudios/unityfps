@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Hamada Type 1
   m_EditorClassIdentifier: 
   name: Hamada Type 1
-  firerate: 2
+  firerate: 0.15
+  bloom: 20
+  recoil: 10
+  kickback: 0.15
   aimSpeed: 14
   prefab: {fileID: 909431690137418416, guid: 6590f3401e543774a8f4e62d4f91ce92, type: 3}

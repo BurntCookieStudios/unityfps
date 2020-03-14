@@ -15,6 +15,8 @@ public class Weapon : MonoBehaviour
     public GameObject hitBloodPrefab;
     public LayerMask canBeShotSurvace;
 
+    private float currentCooldown; //based on firerate
+
     private int currentIndex;
     private GameObject currentWeapon;
 
@@ -29,11 +31,17 @@ public class Weapon : MonoBehaviour
         if (currentWeapon)
         {
             Aim(Input.GetMouseButton(1));
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && currentCooldown <= 0)
             {
                 Shoot();
             }
-        }      
+
+            //weapon position Dehnung: Waffe wird durch Bewegung zurueck auf den Ausgangspunkt gesetzt
+            currentWeapon.transform.localPosition = Vector3.Lerp(currentWeapon.transform.localPosition, Vector3.zero, Time.deltaTime * 4f); //Lerp = Uerbergang
+
+            //cooldown 
+            if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
+        }
     }
 
     #endregion
@@ -75,8 +83,17 @@ public class Weapon : MonoBehaviour
         Transform spawn = transform.Find("Cameras/Normal Camera"); //Raycast aus der Sicht des Spielers, um mittig yzu schiessen.
                                                                    //Ort aus dem der Spieler schiesst.     
 
+        //bloom
+        Vector3 bloom = spawn.position + spawn.forward * 1000f;
+        bloom += Random.Range(-loadout[currentIndex].bloom, loadout[currentIndex].bloom) * spawn.up;
+        bloom += Random.Range(-loadout[currentIndex].bloom, loadout[currentIndex].bloom) * spawn.right;
+        //bloom in eine Richtung fuer den Raycast umwandeln
+        bloom -= spawn.position;
+        bloom.Normalize();
+
+        //Raycast
         RaycastHit hit = new RaycastHit(); //Objekt, das von dem Raycast getroffen wird.
-        if (Physics.Raycast(spawn.position, spawn.forward, out hit, 1000f, canBeShotSurvace))
+        if (Physics.Raycast(spawn.position, bloom, out hit, 1000f, canBeShotSurvace))
         {
             GameObject newHole = Instantiate(bulletholePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject; //hit.point, Ort, an dem der Raycast mit dem Objekt interagiert
                                                                                                                                     //hit.normal * 0.001f => direkt ueber der Layer des Objektes, wir wollen bullethole nicht unter dem Objekt haben.
@@ -89,6 +106,12 @@ public class Weapon : MonoBehaviour
             Destroy(newImpactVFX, 1f); //nach 1 sekunden wird das Loch zerstoert
         }
 
+        //gun fx
+        currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.
+        currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback;
+
+        //cooldown
+        currentCooldown = loadout[currentIndex].firerate;
     }
 
     #endregion
