@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPunCallbacks
 {
     #region Variablen
 
@@ -19,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private float baseFOV;
     private float sprintFOVModifier = 1.2f;
     public Camera normalCam;
+    public GameObject cameraParent;
 
     //Jump
     private float jumpForce = 20f;
@@ -55,8 +57,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        cameraParent.SetActive(photonView.IsMine);
         baseFOV = normalCam.fieldOfView;
-        Camera.main.enabled = false;
+        if (Camera.main) Camera.main.enabled = false;
         camCenter = pCam.localRotation;
         rig = GetComponent<Rigidbody>();
         weaponParentOrigin = weaponParent.localPosition;
@@ -64,6 +67,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!photonView.IsMine) return; //Guckt ob der PhotonView des Spielers zu dem Client gehoert. Wenn nicht, dann soll nichts geschehen.
+
         SetY();
         SetX();
 
@@ -79,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
         bool jump = Input.GetKey(KeyCode.Space);
         
         //States
-        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.4f, ground);
+        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.3f, ground);
         bool isJumping = jump && isGrounded; //kann nur Springen, wenn der Spieler auf dem Boden steht.
         bool isSprinting = sprint && vmove > 0 && !isJumping && isGrounded; //Später eventuell ändern, bspw. kann man SPÄTER nicht sprinten wenn man nicht genug Stamina hat. 
                                                                             // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
@@ -117,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate() //FIXEDUpdate, um unabhaengig von der Leistung u. Verbindung des Clients wie gewollt zu laufen.(=> Multiplayer)
                        //Movement in FixedUpdate, aufgrund der Dynamik 
     {
+        if (!photonView.IsMine) return; //Guckt ob der PhotonView des Spielers zu dem Client gehoert. Wenn nicht, dann soll nichts geschehen.
+
         //Axis
         float hmove = Input.GetAxisRaw("Horizontal"); //RAW verhindert ein "Rutsch-Gefuehl"
         float vmove = Input.GetAxisRaw("Vertical");
@@ -217,7 +224,10 @@ public class PlayerMovement : MonoBehaviour
 
     void ViewBob(float _rate, float _xIntensity, float _yIntensity)
     {
-        targetWeaponBobPosition = weaponParentOrigin + new Vector3(Mathf.Cos(_rate) * _xIntensity, Mathf.Sin(_rate * 2) * _yIntensity, 0); //*2 da sonst eine Kreisbewegung stattfinden wuerde
+        if (Input.GetMouseButton(1)) //beim Aimen nicht so stark
+            targetWeaponBobPosition = weaponParentOrigin + new Vector3(Mathf.Cos(_rate) * _xIntensity/2, Mathf.Sin(_rate * 2) * _yIntensity/2, 0); //*2 da sonst eine Kreisbewegung stattfinden wuerde
+        else
+            targetWeaponBobPosition = weaponParentOrigin + new Vector3(Mathf.Cos(_rate) * _xIntensity, Mathf.Sin(_rate * 2) * _yIntensity, 0); //*2 da sonst eine Kreisbewegung stattfinden wuerde
     }
     #endregion
 

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Loadout : MonoBehaviour
+public class Loadout : MonoBehaviourPunCallbacks
 {
     #region Variablen
 
@@ -26,6 +27,8 @@ public class Loadout : MonoBehaviour
 
     void Update()
     {
+        if (!photonView.IsMine) return; //Guckt ob der PhotonView des Spielers zu dem Client gehoert. Wenn nicht, dann soll nichts geschehen.
+
         if (Input.GetKeyDown(KeyCode.Alpha1)) Equip(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) Equip(1);
 
@@ -69,6 +72,7 @@ public class Loadout : MonoBehaviour
         GameObject newEquipment = Instantiate(loadout[_i].prefab, weaponParent.position, weaponParent.rotation, weaponParent) as GameObject;
         newEquipment.transform.localPosition = Vector3.zero; //um sicher zu gehen, dass die Waffe aufjedenfall an der Position des Parents ist.
         newEquipment.transform.localEulerAngles = Vector3.zero; //^
+        newEquipment.GetComponent<Sway>().enabled = photonView.IsMine; //Sway nur fuer den eigenen Spieler
 
         currentWeapon = newEquipment;
     }
