@@ -34,7 +34,7 @@ public class Sway : MonoBehaviour
         //Ccontrols
         float x_mouse = Input.GetAxis("Mouse X");
         float y_mouse = Input.GetAxis("Mouse Y");
-
+        
         //Rotations Berechnung
         Quaternion x_adjust = Quaternion.AngleAxis(-intensity * x_mouse, Vector3.up); //Vector3.up - Rotation um die Z-Achse
         Quaternion y_adjust = Quaternion.AngleAxis(intensity * y_mouse, Vector3.right); //Vector3.right - Rotation um die X-Achse
