@@ -5,6 +5,21 @@ using Photon.Pun;
 
 public class MainMenu : MonoBehaviourPunCallbacks
 {
+    public void JoinMatch()
+    {
+        Join();
+    }
+
+    public void CreateMatch()
+    {
+        Create();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     #region Photon Unity Network: PUN
 
     //Photon Unity Network: PUN
@@ -17,7 +32,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster() //Callback, wenn der Spieler zum Server connected ist, um dann erst ein Spiel zu joinen oder zu erstellen, etc. pp.
     {
         Debug.Log("CONNECTED!");
-        Join();
 
         base.OnConnectedToMaster(); 
     }

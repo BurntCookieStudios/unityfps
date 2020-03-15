@@ -21,6 +21,8 @@ public class Loadout : MonoBehaviourPunCallbacks
     private int currentIndex;
     private GameObject currentWeapon;
 
+    public AudioSource gunSound;
+
     #endregion
 
     #region Monobehaviour Callbacks
@@ -101,7 +103,12 @@ public class Loadout : MonoBehaviourPunCallbacks
     private void Shoot()
     {
         Transform spawn = transform.Find("Cameras/Normal Camera"); //Raycast aus der Sicht des Spielers, um mittig yzu schiessen.
-                                                                   //Ort aus dem der Spieler schiesst.     
+                                                                   //Ort aus dem der Spieler schiesst.
+                                                                   
+        if (photonView.IsMine)
+        {
+            gunSound.Play();
+        }
 
         //bloom
         Vector3 bloom = spawn.position + spawn.forward * 1000f;
