@@ -2,9 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
+
+public class ProfileData
+{
+    public string username;
+    public int level;
+    public int xp;
+    public int money;
+}
 
 public class MainMenu : MonoBehaviourPunCallbacks
 {
+    public InputField unameField;
+    public static ProfileData myProfile = new ProfileData();
+
     public void JoinMatch()
     {
         Join();
@@ -70,6 +82,15 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
+        if (string.IsNullOrEmpty(unameField.text))
+        {
+            myProfile.username = "USER" + Random.Range(100, 1000);
+        }
+        else
+        {
+            myProfile.username = unameField.text; //Eingegebenen Username zuweisen
+        }
+
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)//nur Host ist im Raum
         {
             PhotonNetwork.LoadLevel(1); //(Alle Spieler laden automatisch, siehe "public void OnEnable()"

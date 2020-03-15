@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class pHealth : MonoBehaviourPunCallbacks
 {
@@ -11,6 +12,8 @@ public class pHealth : MonoBehaviourPunCallbacks
     private int currHealth;
 
     private Transform ui_healthBar;
+
+    private Text ui_Username; //ist natuerlich nicht Health, muss eine PlayerManager klasse mby fuer erstellt werden
 
     private Manager manager;
 
@@ -25,7 +28,10 @@ public class pHealth : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             ui_healthBar = GameObject.Find("HUD/Health/Bar").transform;
+            ui_Username = GameObject.Find("HUD/Username/Text").GetComponent<Text>();
+
             RefreshHealthBar();
+            ui_Username.text = MainMenu.myProfile.username;
         }
     }
 
