@@ -27,35 +27,37 @@ public class Loadout : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (!photonView.IsMine) return; //Guckt ob der PhotonView des Spielers zu dem Client gehoert. Wenn nicht, dann soll nichts geschehen.
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) photonView.RPC("Equip", RpcTarget.All, 0); //RpcTarget.All = ALLE die mit dem Client ueber den Server verbunden sind, erfahren von der EquipMethode. Siehe RpcTarget-Dokumentation
-        if (Input.GetKeyDown(KeyCode.Alpha2)) photonView.RPC("Equip", RpcTarget.All, 1);
+        if (photonView.IsMine)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) photonView.RPC("Equip", RpcTarget.All, 0); //RpcTarget.All = ALLE die mit dem Client ueber den Server verbunden sind, erfahren von der EquipMethode. Siehe RpcTarget-Dokumentation
+            if (Input.GetKeyDown(KeyCode.Alpha2)) photonView.RPC("Equip", RpcTarget.All, 1);
+        }
 
         if (currentWeapon)
         {
-            Aim(Input.GetMouseButton(1));
-            if (Input.GetMouseButtonDown(0) && currentCooldown <= 0)
+            if (photonView.IsMine)
             {
-                switch (loadout[currentIndex].weaponType)
+                Aim(Input.GetMouseButton(1));
+                if (Input.GetMouseButtonDown(0) && currentCooldown <= 0)
                 {
-                    case Weapon.wType.Meele:
-                        break;
-                    case Weapon.wType.Offhand:
-                        photonView.RPC("Shoot", RpcTarget.All);
-                        break;
-                    case Weapon.wType.Mainhand:
-                        photonView.RPC("Shoot", RpcTarget.All);
-                        break;
+                    switch (loadout[currentIndex].weaponType)
+                    {
+                        case Weapon.wType.Meele:
+                            break;
+                        case Weapon.wType.Offhand:
+                            photonView.RPC("Shoot", RpcTarget.All);
+                            break;
+                        case Weapon.wType.Mainhand:
+                            photonView.RPC("Shoot", RpcTarget.All);
+                            break;
+                    }
+
                 }
-
+                //cooldown 
+                if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
             }
-
             //weapon position Dehnung: Waffe wird durch Bewegung zurueck auf den Ausgangspunkt gesetzt
             currentWeapon.transform.localPosition = Vector3.Lerp(currentWeapon.transform.localPosition, Vector3.zero, Time.deltaTime * 4f); //Lerp = Uerbergang
-
-            //cooldown 
-            if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
         }
     }
 
@@ -144,13 +146,13 @@ public class Loadout : MonoBehaviourPunCallbacks
 
         //gun fx
         currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.  
-        if (photonView.IsMine) currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback; // photonView.IsMine uebergangsweise hier beim Kickback, da die Position nicht auf dem Server zurueck gesetzt wird und somit der Arm bzw die Waffe des Spielers sich permanent in eine Richtung bewegt und nicht zurueck kommt
+        currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback; //position wird in Update() automatisch zurueck gesetzt.
     }
 
     [PunRPC]
     private void TakeDamage(int _amount)
     {
-        GetComponent<Health>().TakeDamage(_amount);
+        GetComponent<pHealth>().TakeDamage(_amount);
     }
 
     #endregion
