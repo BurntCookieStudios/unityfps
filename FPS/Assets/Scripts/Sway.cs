@@ -10,6 +10,8 @@ public class Sway : MonoBehaviourPunCallbacks
     private float intensity = 1.5f;
     private float smooth = 10f;
 
+    public bool isMine;
+
     private Quaternion origin_rotation; //default rotation
 
     #endregion
@@ -33,8 +35,14 @@ public class Sway : MonoBehaviourPunCallbacks
     private void UpdateSway()
     {
         //Ccontrols
-        float x_mouse = Input.GetAxis("Mouse X");
-        float y_mouse = Input.GetAxis("Mouse Y");
+        float x_mouse = 0;
+        float y_mouse = 0;
+
+        if (isMine)
+        {
+            x_mouse = Input.GetAxis("Mouse X");
+            y_mouse = Input.GetAxis("Mouse Y");
+        }
         
         //Rotations Berechnung
         Quaternion x_adjust = Quaternion.AngleAxis(-intensity * x_mouse, Vector3.up); //Vector3.up - Rotation um die Z-Achse

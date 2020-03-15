@@ -73,7 +73,7 @@ public class Loadout : MonoBehaviourPunCallbacks
         GameObject newEquipment = Instantiate(loadout[_i].prefab, weaponParent.position, weaponParent.rotation, weaponParent) as GameObject;
         newEquipment.transform.localPosition = Vector3.zero; //um sicher zu gehen, dass die Waffe aufjedenfall an der Position des Parents ist.
         newEquipment.transform.localEulerAngles = Vector3.zero; //^
-        newEquipment.GetComponent<Sway>().enabled = photonView.IsMine; //Sway nur fuer den eigenen Spieler
+        newEquipment.GetComponent<Sway>().isMine = photonView.IsMine; //Sway nur fuer den eigenen Spieler
 
         currentWeapon = newEquipment;
     }
@@ -116,7 +116,7 @@ public class Loadout : MonoBehaviourPunCallbacks
         RaycastHit hit = new RaycastHit(); //Objekt, das von dem Raycast getroffen wird.
         if (Physics.Raycast(spawn.position, bloom, out hit, 1000f, canBeShotSurvace))
         {
-            if (hit.collider.gameObject.layer == 12) //einen Spieler im Netzwerk anschiessen
+            if (hit.collider.gameObject.tag == "Player") //einen Spieler im Netzwerk anschiessen
             {
                 GameObject newImpactVFX = Instantiate(hitBloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject;
                 newImpactVFX.transform.LookAt(hit.point + hit.normal); //um aus Richtung des interagierten Objekts "zu gucken"
