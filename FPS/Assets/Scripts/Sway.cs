@@ -13,6 +13,7 @@ public class Sway : MonoBehaviourPunCallbacks
     public bool isMine;
 
     private Quaternion origin_rotation; //default rotation
+    private Vector3 origin_position; //default position
 
     #endregion
 
