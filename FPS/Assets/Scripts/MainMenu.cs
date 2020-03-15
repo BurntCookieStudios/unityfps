@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 
+
 public class ProfileData
 {
     public string username;
@@ -68,6 +69,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         StartGame();
 
+        VerifyUsername();
 
         base.OnConnectedToMaster();
     }
@@ -98,14 +100,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
-        if (string.IsNullOrEmpty(unameField.text))
-        {
-            myProfile.username = "USER" + Random.Range(100, 1000);
-        }
-        else
-        {
-            myProfile.username = unameField.text; //Eingegebenen Username zuweisen
-        }
+        VerifyUsername();
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)//nur Host ist im Raum
         {
@@ -114,4 +109,16 @@ public class MainMenu : MonoBehaviourPunCallbacks
     }
 
     #endregion
+
+    private void VerifyUsername()
+    {
+        if (string.IsNullOrEmpty(unameField.text))
+        {
+            myProfile.username = "USER" + Random.Range(100, 1000);
+        }
+        else
+        {
+            myProfile.username = unameField.text; //Eingegebenen Username zuweisen
+        }
+    }
 }

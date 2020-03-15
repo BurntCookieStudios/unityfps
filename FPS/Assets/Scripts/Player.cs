@@ -62,6 +62,7 @@ public class Player : MonoBehaviourPunCallbacks
             if(currHealth <= 0)
             {
                 manager.Spawn();
+                manager.ChangeStat_S(PhotonNetwork.LocalPlayer.ActorNumber, 1, 1);
                 PhotonNetwork.Destroy(gameObject);
             }
         }
