@@ -15,6 +15,7 @@ public class Weapon : ScriptableObject
     public wType weaponType;
     public string name;
     public float firerate;
+    public int damage;
     public float bloom;
     public float recoil;
     public float kickback;

@@ -125,6 +125,7 @@ public class Loadout : MonoBehaviourPunCallbacks
                 if (photonView.IsMine)
                 {
                     //RPC Call zum Schaden hinzufuegen des Gegners
+                    hit.collider.gameObject.GetPhotonView().RPC("TakeDamage", RpcTarget.All, loadout[currentIndex].damage);
                 }
             }
             else
@@ -143,7 +144,13 @@ public class Loadout : MonoBehaviourPunCallbacks
 
         //gun fx
         currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.  
-        if (photonView.IsMine) currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback;
+        if (photonView.IsMine) currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback; // photonView.IsMine uebergangsweise hier beim Kickback, da die Position nicht auf dem Server zurueck gesetzt wird und somit der Arm bzw die Waffe des Spielers sich permanent in eine Richtung bewegt und nicht zurueck kommt
+    }
+
+    [PunRPC]
+    private void TakeDamage(int _amount)
+    {
+        GetComponent<Health>().TakeDamage(_amount);
     }
 
     #endregion

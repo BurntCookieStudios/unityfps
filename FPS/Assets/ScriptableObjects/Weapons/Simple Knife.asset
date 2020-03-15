@@ -15,6 +15,7 @@ MonoBehaviour:
   weaponType: 2
   name: Simple Knife
   firerate: 1
+  damage: 34
   bloom: 0
   recoil: 0
   kickback: 0
