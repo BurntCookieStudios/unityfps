@@ -4,16 +4,17 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 
-public class pHealth : MonoBehaviourPunCallbacks
+public class Player : MonoBehaviourPunCallbacks
 {
     #region Variablen
 
     public int maxHealth;
     private int currHealth;
 
-    private Transform ui_healthBar;
+    [HideInInspector] public ProfileData playerProfile;
 
-    private Text ui_Username; //ist natuerlich nicht Health, muss eine PlayerManager klasse mby fuer erstellt werden
+    private Transform ui_healthBar;
+    private Text ui_Username; 
 
     private Manager manager;
 
@@ -30,9 +31,21 @@ public class pHealth : MonoBehaviourPunCallbacks
             ui_healthBar = GameObject.Find("HUD/Health/Bar").transform;
             ui_Username = GameObject.Find("HUD/Username/Text").GetComponent<Text>();
 
+            photonView.RPC("SyncProfile", RpcTarget.All, MainMenu.myProfile.username, MainMenu.myProfile.level, MainMenu.myProfile.xp, MainMenu.myProfile.currency);
+
             RefreshHealthBar();
             ui_Username.text = MainMenu.myProfile.username;
         }
+    }
+
+    #endregion
+
+    #region PUN
+
+    [PunRPC]
+    private void SyncProfile(string _uname, int _level, int _xp, int _currency) //gibt ProfilDaten des Spielers an alle Spieler des Raumes weiter => Alle Spieler kennen alle Namen der Spieler in dem Raum
+    {
+        playerProfile = new ProfileData(_uname, _level, _xp, _currency);
     }
 
     #endregion

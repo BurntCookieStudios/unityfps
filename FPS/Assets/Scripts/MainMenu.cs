@@ -9,7 +9,23 @@ public class ProfileData
     public string username;
     public int level;
     public int xp;
-    public int money;
+    public int currency;
+
+    public ProfileData()
+    {
+        this.username = "DEFAULT USERNAME";
+        this.level = 0;
+        this.xp = 0;
+        this.currency = 0;
+    }
+
+    public ProfileData(string _uname, int _level, int _xp, int _currency)
+    {
+        this.username = _uname;
+        this.level = _level;
+        this.xp = _xp;
+        this.currency = _currency;
+    }
 }
 
 public class MainMenu : MonoBehaviourPunCallbacks

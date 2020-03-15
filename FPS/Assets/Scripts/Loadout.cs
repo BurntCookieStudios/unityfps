@@ -159,7 +159,7 @@ public class Loadout : MonoBehaviourPunCallbacks
     [PunRPC]
     private void TakeDamage(int _amount)
     {
-        GetComponent<pHealth>().TakeDamage(_amount);
+        GetComponent<Player>().TakeDamage(_amount);
     }
 
     #endregion
