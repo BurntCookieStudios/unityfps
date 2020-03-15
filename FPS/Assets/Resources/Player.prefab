@@ -229,7 +229,7 @@ MonoBehaviour:
     type: 3}
   canBeShotSurvace:
     serializedVersion: 2
-    m_Bits: 823
+    m_Bits: 4919
 --- !u!114 &-3312617874082457148
 MonoBehaviour:
   m_ObjectHideFlags: 0

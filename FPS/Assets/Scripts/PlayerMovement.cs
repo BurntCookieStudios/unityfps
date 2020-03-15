@@ -57,7 +57,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        //Generell (Hat nichts mit Movement zutun , wird maybe in eine andere Klasse verschoben)
         cameraParent.SetActive(photonView.IsMine);
+        if (!photonView.IsMine) gameObject.layer = 12; //Spieler, die angeschossen werden koennen vom Client aus.      
+
         baseFOV = normalCam.fieldOfView;
         if (Camera.main) Camera.main.enabled = false;
         camCenter = pCam.localRotation;

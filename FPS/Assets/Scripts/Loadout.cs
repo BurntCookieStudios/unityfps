@@ -29,8 +29,8 @@ public class Loadout : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) return; //Guckt ob der PhotonView des Spielers zu dem Client gehoert. Wenn nicht, dann soll nichts geschehen.
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) Equip(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) Equip(1);
+        if (Input.GetKeyDown(KeyCode.Alpha1)) photonView.RPC("Equip", RpcTarget.All, 0); //RpcTarget.All = ALLE die mit dem Client ueber den Server verbunden sind, erfahren von der EquipMethode. Siehe RpcTarget-Dokumentation
+        if (Input.GetKeyDown(KeyCode.Alpha2)) photonView.RPC("Equip", RpcTarget.All, 1);
 
         if (currentWeapon)
         {
@@ -42,10 +42,10 @@ public class Loadout : MonoBehaviourPunCallbacks
                     case Weapon.wType.Meele:
                         break;
                     case Weapon.wType.Offhand:
-                        Shoot();
+                        photonView.RPC("Shoot", RpcTarget.All);
                         break;
                     case Weapon.wType.Mainhand:
-                        Shoot();
+                        photonView.RPC("Shoot", RpcTarget.All);
                         break;
                 }
 
@@ -63,6 +63,7 @@ public class Loadout : MonoBehaviourPunCallbacks
 
     #region Methoden
 
+    [PunRPC] // Methode wird zu allen Systemen vom Client gesendet, die mit ihm durch den Server verknuepft sind => In diesem Fall koennen Gegner einen Waffenwechsel des Klienten sehen
     private void Equip(int _i)
     {
         if (currentWeapon != null) Destroy(currentWeapon); //ausgeruestete Waffe vorm Equip einer anderen entfernen.
@@ -94,6 +95,7 @@ public class Loadout : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
     private void Shoot()
     {
         Transform spawn = transform.Find("Cameras/Normal Camera"); //Raycast aus der Sicht des Spielers, um mittig yzu schiessen.
@@ -107,27 +109,41 @@ public class Loadout : MonoBehaviourPunCallbacks
         bloom -= spawn.position;
         bloom.Normalize();
 
+        //cooldown
+        currentCooldown = loadout[currentIndex].firerate;
+
         //Raycast
         RaycastHit hit = new RaycastHit(); //Objekt, das von dem Raycast getroffen wird.
         if (Physics.Raycast(spawn.position, bloom, out hit, 1000f, canBeShotSurvace))
         {
-            GameObject newHole = Instantiate(bulletholePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject; //hit.point, Ort, an dem der Raycast mit dem Objekt interagiert
-                                                                                                                                    //hit.normal * 0.001f => direkt ueber der Layer des Objektes, wir wollen bullethole nicht unter dem Objekt haben.
-            newHole.transform.LookAt(hit.point + hit.normal); //um aus Richtung des interagierten Objekts "zu gucken"
+            if (hit.collider.gameObject.layer == 12) //einen Spieler im Netzwerk anschiessen
+            {
+                GameObject newImpactVFX = Instantiate(hitBloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject;
+                newImpactVFX.transform.LookAt(hit.point + hit.normal); //um aus Richtung des interagierten Objekts "zu gucken"
 
-            GameObject newImpactVFX = Instantiate(hitSurvacePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject;
-            newImpactVFX.transform.LookAt(hit.point + hit.normal); //um aus Richtung des interagierten Objekts "zu gucken"
+                Destroy(newImpactVFX, 1f); //nach 1 sekunden wird das Loch zerstoert
+                if (photonView.IsMine)
+                {
+                    //RPC Call zum Schaden hinzufuegen des Gegners
+                }
+            }
+            else
+            {
+                GameObject newHole = Instantiate(bulletholePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject; //hit.point, Ort, an dem der Raycast mit dem Objekt interagiert
+                                                                                                                                        //hit.normal * 0.001f => direkt ueber der Layer des Objektes, wir wollen bullethole nicht unter dem Objekt haben.
+                newHole.transform.LookAt(hit.point + hit.normal); //um aus Richtung des interagierten Objekts "zu gucken"
 
-            Destroy(newHole, 5f); //nach 5 sekunden wird das Loch zerstoert
-            Destroy(newImpactVFX, 1f); //nach 1 sekunden wird das Loch zerstoert
+                GameObject newImpactVFX = Instantiate(hitSurvacePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject;
+                newImpactVFX.transform.LookAt(hit.point + hit.normal); //um aus Richtung des interagierten Objekts "zu gucken"
+
+                Destroy(newHole, 5f); //nach 5 sekunden wird das Loch zerstoert
+                Destroy(newImpactVFX, 1f); //nach 1 sekunden wird das Loch zerstoert
+            }
         }
 
         //gun fx
         currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.
         currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback;
-
-        //cooldown
-        currentCooldown = loadout[currentIndex].firerate;
     }
 
     #endregion
