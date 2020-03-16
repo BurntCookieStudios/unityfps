@@ -29,7 +29,7 @@ public class Player : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             ui_healthBar = GameObject.Find("HUD/Health/Bar").transform;
-            ui_Username = GameObject.Find("HUD/Username/Text").GetComponent<Text>();
+            ui_Username = GameObject.Find("HUD/Profile/Username/Text").GetComponent<Text>();
 
             photonView.RPC("SyncProfile", RpcTarget.All, MainMenu.myProfile.username, MainMenu.myProfile.level, MainMenu.myProfile.xp, MainMenu.myProfile.currency);
 
@@ -52,7 +52,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     #region Methoden
 
-    public void TakeDamage(int _amount)
+    public void TakeDamage(int _amount, int _actor)
     {
         if (photonView.IsMine)
         {
@@ -63,6 +63,10 @@ public class Player : MonoBehaviourPunCallbacks
             {
                 manager.Spawn();
                 manager.ChangeStat_S(PhotonNetwork.LocalPlayer.ActorNumber, 1, 1);
+
+                if (_actor >= 0) //Wenn der Gegner durch naturelle Dinge stirbt, sei es Fall damage, etc
+                    manager.ChangeStat_S(_actor, 0, 1);
+
                 PhotonNetwork.Destroy(gameObject);
             }
         }

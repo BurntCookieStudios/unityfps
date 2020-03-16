@@ -134,7 +134,7 @@ public class Loadout : MonoBehaviourPunCallbacks
                 if (photonView.IsMine)
                 {
                     //RPC Call zum Schaden hinzufuegen des Gegners
-                    hit.collider.gameObject.GetPhotonView().RPC("TakeDamage", RpcTarget.All, loadout[currentIndex].damage);
+                    hit.collider.transform.root.gameObject.GetPhotonView().RPC("TakeDamage", RpcTarget.All, loadout[currentIndex].damage, PhotonNetwork.LocalPlayer.ActorNumber);
                 }
             }
             else
@@ -160,9 +160,9 @@ public class Loadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void TakeDamage(int _amount)
+    private void TakeDamage(int _amount, int _actor)
     {
-        GetComponent<Player>().TakeDamage(_amount);
+        GetComponent<Player>().TakeDamage(_amount, _actor);
     }
 
     #endregion

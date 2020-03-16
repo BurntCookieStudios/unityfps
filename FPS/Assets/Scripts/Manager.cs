@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
 using Photon.Realtime;
@@ -34,6 +35,9 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     public List<PlayerInfo> playerInfo = new List<PlayerInfo>(); //Infos aller Spieler der Lobby bzw. Raum
     public int myIndex; //Hierdurch haben wir die Stelle der Liste, an dem Sich die Infos des Client befinden.
 
+    private Text ui_myKills;
+    private Text ui_myDeaths;
+
     public enum EventCodes : byte //Events des Spielers; Hier werden weitere Events wie bspw. EndGame spaeter hinzugefuegt;
     {
         NewPlayer,
@@ -44,6 +48,7 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     private void Start()
     {
         ValidateConnection();
+        InitializeUI();
         NewPlayer_S(MainMenu.myProfile); //S = Sending (Bezogen auf das Event)
         Spawn();
     }
@@ -92,6 +97,28 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     {
         if (PhotonNetwork.IsConnected) return;
         SceneManager.LoadScene(0);
+    }
+
+    private void InitializeUI()
+    {
+        ui_myKills = GameObject.Find("HUD/Profile/KillCount/Text").GetComponent<Text>();
+        ui_myDeaths = GameObject.Find("HUD/Profile/DeathCount/Text").GetComponent<Text>();
+
+        RefreshMyStats();
+    }
+
+    private void RefreshMyStats()
+    {
+        if(playerInfo.Count > myIndex) 
+        {
+            ui_myKills.text = $"{playerInfo[myIndex].kills}";
+            ui_myDeaths.text = $"{playerInfo[myIndex].deaths}";
+        }
+        else //Wenn wir noch nicht in der Liste sind soll alles auf 0 gesetzt werden
+        {
+            ui_myKills.text = "0";
+            ui_myDeaths.text = "0";
+        }
     }
 
     #endregion
@@ -238,6 +265,8 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
                         Debug.Log($"Player {playerInfo[i].profile.username}: deaths = {playerInfo[i].deaths}"); //... dessen Tode-Anzahl um den Wert amt erhoehen.
                         break;
                 }
+
+                if (i == myIndex) RefreshMyStats(); //Wenn der Spieler, wessen Werte geaendert werden, der Client ist, sollen seine Werte geupdatet werden (UI).
 
                 return;
             }
