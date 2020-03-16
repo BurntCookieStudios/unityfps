@@ -86,7 +86,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public void Connect() //Connect zum generellen Server und nicht Join ins Spiel
     {
         Debug.Log("Trying to Connect...");
-        PhotonNetwork.GameVersion = "0.0.1"; //Version des Spieles, sodass nur Spieler gleicher Version zusammen spielen koennen.
+        PhotonNetwork.GameVersion = "0.0.2"; //Version des Spieles, sodass nur Spieler gleicher Version zusammen spielen koennen.
         PhotonNetwork.ConnectUsingSettings();
     }
 
