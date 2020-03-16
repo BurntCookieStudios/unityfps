@@ -37,12 +37,25 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
 
     private Text ui_myKills;
     private Text ui_myDeaths;
+    private Transform ui_scoreboard;
 
     public enum EventCodes : byte //Events des Spielers; Hier werden weitere Events wie bspw. EndGame spaeter hinzugefuegt;
     {
         NewPlayer,
         UpdatePlayers,
         ChangeStat
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                if (ui_scoreboard.gameObject.activeSelf) ui_scoreboard.gameObject.SetActive(false);
+                else Scoreboard(ui_scoreboard);
+            }
+        }
     }
 
     private void Start()
@@ -103,6 +116,7 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     {
         ui_myKills = GameObject.Find("HUD/Profile/KillCount/Text").GetComponent<Text>();
         ui_myDeaths = GameObject.Find("HUD/Profile/DeathCount/Text").GetComponent<Text>();
+        ui_scoreboard = GameObject.Find("HUD").transform.Find("Scoreboard").transform;
 
         RefreshMyStats();
     }
@@ -119,6 +133,77 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
             ui_myKills.text = "0";
             ui_myDeaths.text = "0";
         }
+    }
+
+    private void Scoreboard (Transform _sb) //generiert das Scoreboard
+    {
+        //aufraumen 
+        //Alle registrierten Spieler im Scoreboard werden entfernt
+        for (int i = 2; i < _sb.childCount; i++) //i = 2, da 2 Objekte, Header und 1 PlayerCard standardgemaess, enthalten sind.
+        {
+            Destroy(_sb.GetChild(i).gameObject);
+        }
+
+        //Setzt Header Details
+        _sb.Find("Header/Mode").GetComponent<Text>().text = "FREE FOR ALL"; //uebergangsweise nur free for all
+        _sb.Find("Header/Map").GetComponent<Text>().text = "BASE Z";
+
+        //Playercard Prefab speichern und aktivieren
+        GameObject playercard = _sb.GetChild(1).gameObject;
+        playercard.SetActive(false);
+
+        //sortierung
+        List<PlayerInfo> sorted = SortPlayers(playerInfo);
+
+        //display
+        bool alternateColors = false; //reines Aussehen, sieht angenehmer im Scoreboard aus
+        foreach (PlayerInfo a in sorted)
+        {
+            GameObject newcard = Instantiate(playercard, _sb) as GameObject;
+
+            if (alternateColors) newcard.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
+            alternateColors = !alternateColors;
+
+            newcard.transform.Find("Rank Display/Level").GetComponent<Text>().text = a.profile.level.ToString("00");
+            newcard.transform.Find("Username").GetComponent<Text>().text = a.profile.username;
+            newcard.transform.Find("Score/ScoreValue").GetComponent<Text>().text = (a.kills * 100).ToString();
+            newcard.transform.Find("Kills/KillsValue").GetComponent<Text>().text = a.kills.ToString();
+            newcard.transform.Find("Death/DeathValue").GetComponent<Text>().text = a.deaths.ToString();
+
+            newcard.SetActive(true);
+        }
+
+        //aktivierung des Scoreboards
+        _sb.gameObject.SetActive(true);
+    }
+
+    //Sortierung nach dem hoechsten Score 
+    private List<PlayerInfo> SortPlayers (List<PlayerInfo> _info) 
+    {
+        List<PlayerInfo> sorted = new List<PlayerInfo>();
+
+        while (sorted.Count < _info.Count)
+        {
+            //set dafaults
+            short highest = -1;
+            PlayerInfo selection = _info[0];
+
+            //den naechst hohesten Spieler hinzufuegen
+            foreach(PlayerInfo a in _info)
+            {
+                if (sorted.Contains(a)) continue; //wenn der Spieler bereits in der Liste ist, soll er nicht beachtet werden und die Schleife soll direkt ein weiter springen
+                if (a.kills > highest)
+                {
+                    selection = a;
+                    highest = a.kills;
+                }
+            }
+
+            // Spieler hinzufuegen
+            sorted.Add(selection);
+        }
+
+        return sorted;
     }
 
     #endregion
@@ -267,6 +352,7 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
                 }
 
                 if (i == myIndex) RefreshMyStats(); //Wenn der Spieler, wessen Werte geaendert werden, der Client ist, sollen seine Werte geupdatet werden (UI).
+                if (ui_scoreboard.gameObject.activeSelf) Scoreboard(ui_scoreboard); //falls sich eine Statistik aendert aber das Scoreboard offen ist, soll das Scoreboard refreshed werde (Zum refreshen wird das Board einfach neu erstellt)
 
                 return;
             }
