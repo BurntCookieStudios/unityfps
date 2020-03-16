@@ -7,7 +7,7 @@ using Photon.Realtime;
 using ExitGames.Client.Photon;
 
 
-//ZUM VERSTEHEN DER FUNKTIONEN WIRD WAHRSCHEINLICH DIE DOKUMENTATION BENOETIGT (PHOTON EVENTS):
+//ZUM VERSTEHEN DER FUNKTIONEN WIRD EVENTUELL DIE DOKUMENTATION BENOETIGT (PHOTON EVENTS):
 //https://doc.photonengine.com/en-us/pun/v2/gameplay/rpcsandraiseevent
 
 public class PlayerInfo
@@ -51,12 +51,12 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     #region Photon
 
     //RECIEVE EVENT
-    public void OnEvent(EventData _photonEvent) 
+    public void OnEvent(EventData photonEvent)
     {
-        if (_photonEvent.Code >= 200) return; //Photon reserviert automatisch 200-255, somit koennen wir nur unter 199 benutzen, deshalb wird nachgefragt, siehe Dokumentation
+        if (photonEvent.Code >= 200) return; //Photon reserviert automatisch 200-255, somit koennen wir nur unter 199 benutzen, deshalb wird nachgefragt, siehe Dokumentation
 
-        EventCodes e = (EventCodes)_photonEvent.Code; //Anlass des Ausfuehrens nehmen
-        object[] o = (object[])_photonEvent.CustomData; //Code unwrappen
+        EventCodes e = (EventCodes)photonEvent.Code; //Anlass des Ausfuehrens nehmen
+        object[] o = (object[])photonEvent.CustomData; //Code unwrappen
 
         switch (e) //Handeln jeh nach Anlass
         {
@@ -84,7 +84,8 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     public void Spawn()
     {
         Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        PhotonNetwork.Instantiate(playerPrefab, spawn.position, spawn.rotation);
+        if (PhotonNetwork.IsConnected)
+            PhotonNetwork.Instantiate(playerPrefab, spawn.position, spawn.rotation);
     }
 
     private void ValidateConnection() //Guckt ob ein Spiel noch laeuft oder ob der Spieler noch dazu connected ist oder ob seine Verbindung abgebrochen wurde. Ist seine Verbindung getrennt worden, wird er ins Hauptmenu geschickt.
@@ -96,6 +97,16 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     #endregion
 
     #region Events 
+
+    public void OnEnable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+    }
+
+    public void OnDisable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
+    }
 
     public void NewPlayer_S (ProfileData _p) //Sendet die profileinformationen zum Server
     {
@@ -224,7 +235,7 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
 
                     case 1: //deaths
                         playerInfo[i].deaths += amt;
-                        Debug.Log($"Player {playerInfo[i].profile.username}: kills = {playerInfo[i].deaths}"); //... dessen Tode-Anzahl um den Wert amt erhoehen.
+                        Debug.Log($"Player {playerInfo[i].profile.username}: deaths = {playerInfo[i].deaths}"); //... dessen Tode-Anzahl um den Wert amt erhoehen.
                         break;
                 }
 

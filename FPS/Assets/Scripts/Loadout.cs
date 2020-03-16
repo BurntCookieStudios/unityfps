@@ -152,8 +152,11 @@ public class Loadout : MonoBehaviourPunCallbacks
         }
 
         //gun fx
-        currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.  
-        currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback; //position wird in Update() automatisch zurueck gesetzt.
+        if (currentWeapon != null)
+        {
+            currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.  
+            currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback; //position wird in Update() automatisch zurueck gesetzt.
+        }
     }
 
     [PunRPC]
