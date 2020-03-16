@@ -78,6 +78,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         Create();
 
+        VerifyUsername();
+
         base.OnJoinRandomFailed(returnCode, message);
     }
 
@@ -90,11 +92,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void Join()
     {
-        PhotonNetwork.JoinRandomRoom();
+        VerifyUsername();
+        PhotonNetwork.JoinRandomRoom();       
     }
 
     public void Create() //Create a match
     {
+        VerifyUsername();
         PhotonNetwork.CreateRoom("");
     }
 
