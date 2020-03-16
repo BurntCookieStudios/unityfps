@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public GameObject cameraParent;
 
     //Jump
-    private float jumpForce = 20f;
+    private float jumpForce = 5f;
     public LayerMask ground;
     public Transform groundDetector; //Punkt von dem geprueft werden soll, ob er sich auf dem Boden befindet.
     #endregion
@@ -84,22 +84,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         //Controls
         bool sprint = Input.GetKey(KeyCode.LeftShift);
-        bool jump = Input.GetKey(KeyCode.Space);
-        
+        bool jump = Input.GetKeyDown(KeyCode.Space);
+
         //States
-        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.3f, ground);
+        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.1f, ground);
         bool isJumping = jump && isGrounded; //kann nur Springen, wenn der Spieler auf dem Boden steht.
         bool isSprinting = sprint && vmove > 0 && !isJumping && isGrounded; //Später eventuell ändern, bspw. kann man SPÄTER nicht sprinten wenn man nicht genug Stamina hat. 
                                                                             // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
                                                                             //!isJumping um nicht beim Springen zu Sprinten 
                                                                             //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
-        //Jumping:
-        if (isJumping)
-        {
-            rig.AddForce(Vector3.up * jumpForce);
-        }
-
-
         //ViewBobbing
         if (hmove == 0 && vmove == 0)
         {
@@ -136,12 +129,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         bool jump = Input.GetKey(KeyCode.Space);
 
         //States
-        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.4f, ground);
+        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.1f, ground);
         bool isJumping = jump && isGrounded; //kann nur Springen, wenn der Spieler auf dem Boden steht.
         bool isSprinting = sprint && vmove > 0 && !isJumping && isGrounded; //Später eventuell ändern, bspw. kann man SPÄTER nicht sprinten wenn man nicht genug Stamina hat. 
                                                                             // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
                                                                             //!isJumping um nicht beim Springen zu Sprinten 
                                                                             //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
+        //Jumping:
+        if (isJumping)
+        {
+            rig.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
         //Weitere Variablen
         float adjustedSpeed = moveSpeed;
 
