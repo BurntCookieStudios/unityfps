@@ -34,8 +34,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public Transform pCam;
     public Transform weapon;
 
-    public float xSensitivity;
-    public float ySensitivity;
+    public static float sensitivity = 1000f;
     private float maxAngle = 90f;
 
     private Quaternion camCenter;
@@ -72,10 +71,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) return; //Guckt ob der PhotonView des Spielers zu dem Client gehoert. Wenn nicht, dann soll nichts geschehen.
 
-        SetY();
-        SetX();
-
-        UpdateLockCursor();
+        if (!Pause.paused)
+        {
+            SetY();
+            SetX();
+            UpdateLockCursor();
+        }
 
         //Axis, Controls, States ebenfalls in Update, sowie auch in fixedUpdate um keine "Loecher" zuhaben, also eine durchgaengige Reaktion
         //Axis
@@ -92,7 +93,19 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         bool isSprinting = sprint && vmove > 0 && !isJumping && isGrounded; //Später eventuell ändern, bspw. kann man SPÄTER nicht sprinten wenn man nicht genug Stamina hat. 
                                                                             // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
                                                                             //!isJumping um nicht beim Springen zu Sprinten 
-                                                                            //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
+                                                                            //kann nur Sprinten, wenn der Spieler auf dem Boden steht.  
+        //Pause
+        if (Pause.paused)
+        {
+            hmove = 0f;
+            vmove = 0f;
+            sprint = false;
+            jump = false;
+            isGrounded = false;
+            isJumping = false;
+            isSprinting = false;
+        }
+
         //ViewBobbing
         if (hmove == 0 && vmove == 0)
         {
@@ -112,7 +125,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
             movementCounter += Time.deltaTime * 9f; //Doppelt so schnelle Bewegung
             weaponParent.localPosition = Vector3.Lerp(weaponParent.localPosition, targetWeaponBobPosition, Time.deltaTime * 10f);
         }
-
     }
 
     void FixedUpdate() //FIXEDUpdate, um unabhaengig von der Leistung u. Verbindung des Clients wie gewollt zu laufen.(=> Multiplayer)
@@ -135,6 +147,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
                                                                             // vmove > 0, um zu pruefen, ob der Spieler sich vorwaerts bewegt => verhindert Rueckwaerts Sprinten 
                                                                             //!isJumping um nicht beim Springen zu Sprinten 
                                                                             //kann nur Sprinten, wenn der Spieler auf dem Boden steht.    
+        //Pause
+        if (Pause.paused)
+        {
+            hmove = 0f;
+            vmove = 0f;
+            sprint = false;
+            jump = false;
+            isGrounded = false;
+            isJumping = false;
+            isSprinting = false;
+        }
+
         //Jumping:
         if (isJumping)
         {
@@ -176,7 +200,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
      */
     void SetY() //Vertikale Sicht
     {
-        float input = Input.GetAxis("Mouse Y") * ySensitivity * Time.deltaTime;
+        float input = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
         Quaternion adjust = Quaternion.AngleAxis(input, -Vector3.right); //Quaternion = Vier dimensionaler Vektor; ist Datentyp der Rotation.
         Quaternion delta = pCam.localRotation * adjust;
 
@@ -193,7 +217,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     */
     void SetX() //Horizontale Sicht
     {
-        float input = Input.GetAxis("Mouse X") * xSensitivity * Time.deltaTime;
+        float input = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
         Quaternion adjust = Quaternion.AngleAxis(input, -Vector3.down); //Quaternion = Vier dimensionaler Vektor; ist Datentyp der Rotation.
         Quaternion delta = player.localRotation * adjust; 
         player.localRotation = delta;

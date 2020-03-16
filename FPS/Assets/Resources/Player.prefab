@@ -204,8 +204,6 @@ MonoBehaviour:
   player: {fileID: 536110838485488637}
   pCam: {fileID: 536110838978490080}
   weapon: {fileID: 536110839889762659}
-  xSensitivity: 200
-  ySensitivity: 200
   weaponParent: {fileID: 536110839889762659}
 --- !u!114 &7934096947038038041
 MonoBehaviour:

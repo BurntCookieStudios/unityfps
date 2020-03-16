@@ -29,6 +29,8 @@ public class Loadout : MonoBehaviourPunCallbacks
 
     void Update()
     {
+        if (photonView.IsMine && Pause.paused) return;
+
         if (photonView.IsMine)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) photonView.RPC("Equip", RpcTarget.All, 0); //RpcTarget.All = ALLE die mit dem Client ueber den Server verbunden sind, erfahren von der EquipMethode. Siehe RpcTarget-Dokumentation

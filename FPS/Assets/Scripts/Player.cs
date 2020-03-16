@@ -38,6 +38,23 @@ public class Player : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Update()
+    {
+        //Controls
+        bool pause = Input.GetKeyDown(KeyCode.Escape);
+
+        //pause
+        if (pause)
+        {
+            GameObject.Find("Pause").GetComponent<Pause>().TogglePause();
+        }
+
+        if (Pause.paused)
+        {
+            pause = false;
+        }
+    }
+
     #endregion
 
     #region PUN

@@ -34,6 +34,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public InputField unameField;
     public static ProfileData myProfile = new ProfileData();
 
+    public void Start()
+    {
+        Pause.paused = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     public void JoinMatch()
     {
         Join();
