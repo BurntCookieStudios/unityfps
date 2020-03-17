@@ -16,7 +16,7 @@ MonoBehaviour:
   name: Hamada Type 1
   firerate: 0.15
   damage: 13
-  bloom: 24
+  bloom: 17
   recoil: 10
   kickback: 0.15
   aimSpeed: 14

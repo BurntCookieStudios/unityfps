@@ -200,7 +200,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
      */
     void SetY() //Vertikale Sicht
     {
-        float input = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+        float input = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime;
         Quaternion adjust = Quaternion.AngleAxis(input, -Vector3.right); //Quaternion = Vier dimensionaler Vektor; ist Datentyp der Rotation.
         Quaternion delta = pCam.localRotation * adjust;
 
@@ -217,7 +217,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     */
     void SetX() //Horizontale Sicht
     {
-        float input = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        float input = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime;
         Quaternion adjust = Quaternion.AngleAxis(input, -Vector3.down); //Quaternion = Vier dimensionaler Vektor; ist Datentyp der Rotation.
         Quaternion delta = player.localRotation * adjust; 
         player.localRotation = delta;
