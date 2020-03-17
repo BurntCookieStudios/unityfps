@@ -37,10 +37,6 @@ public class Pause : MonoBehaviour
         resolutionDropdown.RefreshShownValue();
 
         qualityDropdown.value = QualitySettings.GetQualityLevel();
-
-        Text valueText = GameObject.Find("Settings/Buttons/Sensitivity/Value").GetComponent<Text>();
-        if(valueText)
-            valueText.text = (PlayerMovement.sensitivity / 200).ToString("F2");
     }
 
     public void TogglePause()

@@ -14,7 +14,10 @@ public class Player : MonoBehaviourPunCallbacks
     [HideInInspector] public ProfileData playerProfile;
 
     private Transform ui_healthBar;
-    private Text ui_Username; 
+    private Text ui_Username;
+
+    private Image damageDisplayImage;
+    private float damageDisplayWait;
 
     private Manager manager;
 
@@ -24,10 +27,14 @@ public class Player : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        damageDisplayImage = GameObject.Find("HUD/DamageDisplay/Image").GetComponent<Image>();
         manager = GameObject.Find("Manager").GetComponent<Manager>();
         currHealth = maxHealth;
         if (photonView.IsMine)
         {
+
+            damageDisplayImage.color = new Color(255, 0, 0, 0);//versichert, dass das DamageDisplayt standardgemaess unsichtbar ist
+
             ui_healthBar = GameObject.Find("HUD/Health/Bar").transform;
             ui_Username = GameObject.Find("HUD/Profile/Username/Text").GetComponent<Text>();
 
@@ -53,6 +60,18 @@ public class Player : MonoBehaviourPunCallbacks
         {
             pause = false;
         }
+
+        if (photonView.IsMine)
+        {
+            if (damageDisplayWait > 0)
+            {
+                damageDisplayWait -= Time.deltaTime;
+            }
+            else if (damageDisplayImage.color.a > 0)
+            {
+                damageDisplayImage.color = Color.Lerp(damageDisplayImage.color, new Color(255, 0, 0, 0), Time.deltaTime * 3); //Lerp = Uebergang
+            }
+        }
     }
 
     #endregion
@@ -73,6 +92,10 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
+            //DamageDisplay anzeigen
+            damageDisplayImage.color = new Color(255, 0, 0, 0.2f);
+            damageDisplayWait = 0.1f; //Zeit die das DamageDisplay zum verschwinden brauch
+
             currHealth -= _amount;
             RefreshHealthBar();
 

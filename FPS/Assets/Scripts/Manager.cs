@@ -69,19 +69,6 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
         photonView = PhotonView.Get(this);
     }
 
-    private void OnApplicationQuit()
-    {
-        photonView.RPC("Quit", RpcTarget.All);
-        PhotonNetwork.LeaveRoom();
-    }
-
-    [PunRPC]
-    private void Quit()
-    {
-        playerInfo.RemoveAt(myIndex);
-        if (ui_scoreboard.gameObject.activeSelf) Scoreboard(ui_scoreboard); //falls sich eine Statistik aendert aber das Scoreboard offen ist, soll das Scoreboard refreshed werde (Zum refreshen wird das Board einfach neu erstellt)
-    }
-
     #region Photon
 
     //RECIEVE EVENT
