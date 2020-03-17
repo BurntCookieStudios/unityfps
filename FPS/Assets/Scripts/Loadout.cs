@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class Loadout : MonoBehaviourPunCallbacks
 {
@@ -16,16 +17,28 @@ public class Loadout : MonoBehaviourPunCallbacks
     public GameObject hitBloodPrefab;
     public LayerMask canBeShotSurvace;
 
+    private Image hitmarkerImage;
+    private float hitmarkerWait;
+
     private float currentCooldown; //based on firerate
 
     private int currentIndex;
     private GameObject currentWeapon;
 
-    public AudioSource gunSound;
+    public AudioSource sfx;
+    public AudioClip hitmarkerSound;
 
     #endregion
 
     #region Monobehaviour Callbacks
+
+    private void Start()
+    {
+        hitmarkerImage = GameObject.Find("HUD/Hitmarker/Image").GetComponent<Image>();
+        hitmarkerImage.color = new Color(1, 1, 1, 0);//versichert, dass der hitmarker standardgemaess unsichtbar ist
+
+        Equip(0);
+    }
 
     void Update()
     {
@@ -62,6 +75,18 @@ public class Loadout : MonoBehaviourPunCallbacks
             }
             //weapon position Dehnung: Waffe wird durch Bewegung zurueck auf den Ausgangspunkt gesetzt
             currentWeapon.transform.localPosition = Vector3.Lerp(currentWeapon.transform.localPosition, Vector3.zero, Time.deltaTime * 4f); //Lerp = Uerbergang
+        }
+
+        if (photonView.IsMine)
+        {
+            if (hitmarkerWait > 0)
+            {
+                hitmarkerWait -= Time.deltaTime;
+            }
+            else if (hitmarkerImage.color.a > 0)
+            {
+                hitmarkerImage.color = Color.Lerp(hitmarkerImage.color, new Color(1, 1, 1, 0), Time.deltaTime * 3); //Lerp = Uebergang
+            }
         }
     }
 
@@ -109,7 +134,7 @@ public class Loadout : MonoBehaviourPunCallbacks
                                                                    
         if (photonView.IsMine)
         {
-            gunSound.Play();
+            sfx.PlayOneShot(loadout[currentIndex].sound);
         }
 
         //bloom
@@ -137,6 +162,11 @@ public class Loadout : MonoBehaviourPunCallbacks
                 {
                     //RPC Call zum Schaden hinzufuegen des Gegners
                     hit.collider.transform.root.gameObject.GetPhotonView().RPC("TakeDamage", RpcTarget.All, loadout[currentIndex].damage, PhotonNetwork.LocalPlayer.ActorNumber);
+
+                    //Hitmarker anzeigen
+                    hitmarkerImage.color = Color.white;
+                    sfx.PlayOneShot(hitmarkerSound);
+                    hitmarkerWait = 0.25f; //Zeit die der Hitmarker zum verschwinden brauch
                 }
             }
             else

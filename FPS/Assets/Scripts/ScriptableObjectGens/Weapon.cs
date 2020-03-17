@@ -21,4 +21,5 @@ public class Weapon : ScriptableObject
     public float kickback;
     public float aimSpeed; //Schnelligkeit in Sight / Scope einer Waffe zu gehen (bsp.: Sniper langsamer als Pistole)
     public GameObject prefab;
+    public AudioClip sound;
 }

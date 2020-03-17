@@ -230,7 +230,8 @@ MonoBehaviour:
   canBeShotSurvace:
     serializedVersion: 2
     m_Bits: 4919
-  gunSound: {fileID: 8078719053994006221}
+  sfx: {fileID: 8078719053994006221}
+  hitmarkerSound: {fileID: 8300000, guid: 2924c65a726749f49b2b237e6292a7e6, type: 3}
 --- !u!114 &8315883041152534462
 MonoBehaviour:
   m_ObjectHideFlags: 0

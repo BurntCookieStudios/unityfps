@@ -171,8 +171,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         if (isSprinting)
         {
             adjustedSpeed *= sprintModifier;
-            normalCam.fieldOfView = Mathf.Lerp(normalCam.fieldOfView, baseFOV * sprintFOVModifier, Time.deltaTime * 8f); //Sprint-Effekt 
-                                                                                                                         //Mathf.Lerp: Uebergang von der normalen FOV zur veraenderten, damit kein Snapping entsteht.
+            normalCam.fieldOfView = Mathf.Lerp(normalCam.fieldOfView, baseFOV * sprintFOVModifier, Time.deltaTime * 8f); //Sprint-Effekt                                                                                                                         //Mathf.Lerp: Uebergang von der normalen FOV zur veraenderten, damit kein Snapping entsteht.
         }
         else
             normalCam.fieldOfView = Mathf.Lerp(normalCam.fieldOfView, baseFOV, Time.deltaTime * 8f); ; //KEIN Sprint-Effekt //Mathf.Lerp: Uebergang von der veraenderten FOV zur normalen, damit kein Snapping entsteht.

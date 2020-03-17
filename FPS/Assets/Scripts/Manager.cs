@@ -39,6 +39,8 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
     private Text ui_myDeaths;
     private Transform ui_scoreboard;
 
+    private PhotonView photonView;
+
     public enum EventCodes : byte //Events des Spielers; Hier werden weitere Events wie bspw. EndGame spaeter hinzugefuegt;
     {
         NewPlayer,
@@ -64,6 +66,20 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
         InitializeUI();
         NewPlayer_S(MainMenu.myProfile); //S = Sending (Bezogen auf das Event)
         Spawn();
+        photonView = PhotonView.Get(this);
+    }
+
+    private void OnApplicationQuit()
+    {
+        photonView.RPC("Quit", RpcTarget.All);
+        PhotonNetwork.LeaveRoom();
+    }
+
+    [PunRPC]
+    private void Quit()
+    {
+        playerInfo.RemoveAt(myIndex);
+        if (ui_scoreboard.gameObject.activeSelf) Scoreboard(ui_scoreboard); //falls sich eine Statistik aendert aber das Scoreboard offen ist, soll das Scoreboard refreshed werde (Zum refreshen wird das Board einfach neu erstellt)
     }
 
     #region Photon
@@ -135,7 +151,7 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
         }
     }
 
-    private void Scoreboard (Transform _sb) //generiert das Scoreboard
+    private void Scoreboard(Transform _sb) //generiert das Scoreboard 
     {
         //aufraumen 
         //Alle registrierten Spieler im Scoreboard werden entfernt
@@ -175,7 +191,7 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
 
         //aktivierung des Scoreboards
         _sb.gameObject.SetActive(true);
-    }
+    } 
 
     //Sortierung nach dem hoechsten Score 
     private List<PlayerInfo> SortPlayers (List<PlayerInfo> _info) 
@@ -311,6 +327,7 @@ public class Manager : MonoBehaviour, IOnEventCallback //Call und Recieve Events
             playerInfo.Add(p);
 
             if (PhotonNetwork.LocalPlayer.ActorNumber == p.actor) myIndex = i; //Guckt, welcher Spieler der Liste man selbst ist und speichert diese Information
+            if (ui_scoreboard.gameObject.activeSelf) Scoreboard(ui_scoreboard); //falls sich eine Statistik aendert aber das Scoreboard offen ist, soll das Scoreboard refreshed werde (Zum refreshen wird das Board einfach neu erstellt)
         }
     }
 

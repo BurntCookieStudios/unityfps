@@ -21,3 +21,4 @@ MonoBehaviour:
   kickback: 0.15
   aimSpeed: 14
   prefab: {fileID: 909431690137418416, guid: 6590f3401e543774a8f4e62d4f91ce92, type: 3}
+  sound: {fileID: 8300000, guid: 60b6cdcf613880748aa6eb42ce1cc306, type: 3}

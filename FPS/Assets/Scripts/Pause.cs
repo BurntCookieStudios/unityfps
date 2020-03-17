@@ -72,7 +72,7 @@ public class Pause : MonoBehaviour
     //Settings
     public void SetSensitivity(float _sens)
     {
-        Text valueText = GameObject.Find("Settings/Buttons/Sensitivity/Value").GetComponent<Text>();
+        Text valueText = GameObject.Find("Pause/Settings/Buttons/Sensitivity/Value").GetComponent<Text>();
         PlayerMovement.sensitivity = _sens;
         valueText.text = (PlayerMovement.sensitivity / 200).ToString("F2");
     }
