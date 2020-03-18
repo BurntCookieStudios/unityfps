@@ -16,6 +16,7 @@ public class Player : MonoBehaviourPunCallbacks
     private Transform ui_healthBar;
     private Text ui_Username;
     private Text ui_Ammo;
+    private GameObject crosshair;
 
     private Image damageDisplayImage;
     private float damageDisplayWait;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviourPunCallbacks
     void Start()
     {
         damageDisplayImage = GameObject.Find("HUD/DamageDisplay/Image").GetComponent<Image>();
+        crosshair = GameObject.Find("HUD/Crosshair");
         manager = GameObject.Find("Manager").GetComponent<Manager>();
         loadout = GetComponent<Loadout>();
         currHealth = maxHealth;
@@ -78,6 +80,12 @@ public class Player : MonoBehaviourPunCallbacks
             }
 
             loadout.RefreshAmmo(ui_Ammo);
+
+            if (loadout.isAiming && crosshair.activeSelf) crosshair.SetActive(false);
+            else if (!loadout.isAiming && !crosshair.activeSelf)
+            {
+                crosshair.SetActive(true);
+            }
         }
     }
 

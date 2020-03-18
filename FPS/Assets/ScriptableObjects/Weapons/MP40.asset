@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 256c1101f4f9a1e49bf69d398dce029a, type: 3}
-  m_Name: Hamada Type 1
+  m_Name: MP40
   m_EditorClassIdentifier: 
-  weaponType: 1
-  name: Hamada Type 1
-  firerate: 0.15
-  damage: 16
-  ammo: 60
-  clipsize: 10
-  bloom: 17
+  weaponType: 0
+  name: MP40
+  firerate: 0.12
+  damage: 9
+  ammo: 120
+  clipsize: 20
+  bloom: 22
   recoil: 10
   kickback: 0.15
   aimSpeed: 14
-  reloadTime: 1
-  prefab: {fileID: 909431690137418416, guid: 6590f3401e543774a8f4e62d4f91ce92, type: 3}
+  reloadTime: 2
+  prefab: {fileID: 909431690137418416, guid: 79ad7a6b22a67124a836ef9dbd25088e, type: 3}
   sound: {fileID: 8300000, guid: 60b6cdcf613880748aa6eb42ce1cc306, type: 3}

@@ -49,6 +49,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     private float movementCounter; //Zeit, die der Spieler in einer Bewegung am Stueck war
     private float idleCounter; //Zeit, die der Spieler nicht in einer Bewegung am Stueck war
     #endregion
+    private Loadout loadout;
 
     #endregion
 
@@ -60,6 +61,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         cameraParent.SetActive(photonView.IsMine);
         if (!photonView.IsMine) gameObject.layer = 12; //Spieler, die angeschossen werden koennen vom Client aus.      
 
+        loadout = GetComponent<Loadout>();
         baseFOV = normalCam.fieldOfView;
         if (Camera.main) Camera.main.enabled = false;
         camCenter = pCam.localRotation;
@@ -248,8 +250,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     void ViewBob(float _rate, float _xIntensity, float _yIntensity)
     {
-        if (Input.GetMouseButton(1)) //beim Aimen nicht so stark
-            targetWeaponBobPosition = weaponParentOrigin + new Vector3(Mathf.Cos(_rate) * _xIntensity/2, Mathf.Sin(_rate * 2) * _yIntensity/2, 0); //*2 da sonst eine Kreisbewegung stattfinden wuerde
+        if (loadout.isAiming) //beim Aimen nicht so stark
+            targetWeaponBobPosition = weaponParentOrigin + new Vector3(Mathf.Cos(_rate) * _xIntensity/10, Mathf.Sin(_rate * 2) * _yIntensity/10, 0); //*2 da sonst eine Kreisbewegung stattfinden wuerde
         else
             targetWeaponBobPosition = weaponParentOrigin + new Vector3(Mathf.Cos(_rate) * _xIntensity, Mathf.Sin(_rate * 2) * _yIntensity, 0); //*2 da sonst eine Kreisbewegung stattfinden wuerde
     }

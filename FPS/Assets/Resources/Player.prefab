@@ -218,8 +218,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadout:
-  - {fileID: 11400000, guid: 005f7ec6277b25b43a713cdc8e3d3e7b, type: 2}
+  - {fileID: 11400000, guid: c42043da520e84942b75b8ef8da00680, type: 2}
   - {fileID: 11400000, guid: 50b9d95f85a936f4e84e327c583c7600, type: 2}
+  - {fileID: 11400000, guid: 005f7ec6277b25b43a713cdc8e3d3e7b, type: 2}
   weaponParent: {fileID: 536110839889762659}
   bulletholePrefab: {fileID: 5263835086978447957, guid: 2ce7de77319e94e4ea01dc403a127a04,
     type: 3}
@@ -232,6 +233,7 @@ MonoBehaviour:
     m_Bits: 4919
   sfx: {fileID: 8078719053994006221}
   hitmarkerSound: {fileID: 8300000, guid: 2924c65a726749f49b2b237e6292a7e6, type: 3}
+  isAiming: 0
 --- !u!114 &8315883041152534462
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -29,6 +29,7 @@ public class Loadout : MonoBehaviourPunCallbacks
     public AudioClip hitmarkerSound;
 
     private bool isReloading = false;
+    public bool isAiming = false;
 
     #endregion
 
@@ -37,7 +38,7 @@ public class Loadout : MonoBehaviourPunCallbacks
     private void Start()
     {
         if (photonView.IsMine) foreach (Weapon a in loadout) a.Init();
-        Equip(1);
+        Equip(0);
 
         hitmarkerImage = GameObject.Find("HUD/Hitmarker/Image").GetComponent<Image>();
         hitmarkerImage.color = new Color(1, 1, 1, 0);//versichert, dass der hitmarker standardgemaess unsichtbar ist
@@ -51,7 +52,8 @@ public class Loadout : MonoBehaviourPunCallbacks
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) photonView.RPC("Equip", RpcTarget.All, 0); //RpcTarget.All = ALLE die mit dem Client ueber den Server verbunden sind, erfahren von der EquipMethode. Siehe RpcTarget-Dokumentation
             if (Input.GetKeyDown(KeyCode.Alpha2)) photonView.RPC("Equip", RpcTarget.All, 1);
-            
+            if (Input.GetKeyDown(KeyCode.Alpha3)) photonView.RPC("Equip", RpcTarget.All, 2);
+
             if (Input.GetKeyDown(KeyCode.R) && !isReloading && !loadout[currentIndex].IsClipFull() && !loadout[currentIndex].StashEmpty()) StartCoroutine(Reload(loadout[currentIndex].reloadTime)); //Reload
         }
 
@@ -60,23 +62,39 @@ public class Loadout : MonoBehaviourPunCallbacks
             if (photonView.IsMine)
             {
                 Aim(Input.GetMouseButton(1));
-                if (Input.GetMouseButtonDown(0) && currentCooldown <= 0 && !isReloading)
+
+                switch (loadout[currentIndex].weaponType)
                 {
-                    if (loadout[currentIndex].FireBullet())
-                    {
-                        switch (loadout[currentIndex].weaponType)
+                    case Weapon.wType.Meele:
+                        if (Input.GetMouseButtonDown(0) && currentCooldown <= 0 && !isReloading)
                         {
-                            case Weapon.wType.Meele:
-                                break;
-                            case Weapon.wType.SemiAuto:
-                                photonView.RPC("Shoot", RpcTarget.All);
-                                break;
-                            case Weapon.wType.Automatic: //die waffe ist aufgrund der open aufgefuehrten Input frage nicht moeglich?, CODE MUSS ANGEPASST WERDEN
-                                photonView.RPC("Shoot", RpcTarget.All);
-                                break;
+                            if (loadout[currentIndex].FireBullet())
+                            {
+
+                            }
+                            else if (!loadout[currentIndex].StashEmpty()) StartCoroutine(Reload(loadout[currentIndex].reloadTime));
                         }
-                    }
-                    else if (!loadout[currentIndex].StashEmpty())StartCoroutine(Reload(loadout[currentIndex].reloadTime));
+                        break;
+                    case Weapon.wType.SemiAuto:
+                        if (Input.GetMouseButtonDown(0) && currentCooldown <= 0 && !isReloading)
+                        {
+                            if (loadout[currentIndex].FireBullet())
+                            {
+                                photonView.RPC("Shoot", RpcTarget.All);
+                            }
+                            else if (!loadout[currentIndex].StashEmpty()) StartCoroutine(Reload(loadout[currentIndex].reloadTime));
+                        }
+                        break;
+                    case Weapon.wType.Automatic:
+                        if (Input.GetMouseButton(0) && currentCooldown <= 0 && !isReloading)
+                        {
+                            if (loadout[currentIndex].FireBullet())
+                            {
+                                photonView.RPC("Shoot", RpcTarget.All);
+                            }
+                            else if (!loadout[currentIndex].StashEmpty()) StartCoroutine(Reload(loadout[currentIndex].reloadTime));
+                        }
+                        break;
                 }
                 //cooldown 
                 if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
@@ -122,6 +140,7 @@ public class Loadout : MonoBehaviourPunCallbacks
 
     private void Aim(bool _isAiming)
     {
+        isAiming = _isAiming;
         Transform anchor = currentWeapon.transform.Find("Anchor");
         Transform state_ads = currentWeapon.transform.Find("States/ADS");
         Transform state_hip = currentWeapon.transform.Find("States/Hip");
@@ -133,7 +152,6 @@ public class Loadout : MonoBehaviourPunCallbacks
         else
         {
             anchor.position = Vector3.Lerp(anchor.position, state_hip.position, Time.deltaTime * loadout[currentIndex].aimSpeed); //aus Visir gehen
-
         }
     }
 
