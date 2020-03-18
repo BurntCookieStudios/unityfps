@@ -28,16 +28,19 @@ public class Loadout : MonoBehaviourPunCallbacks
     public AudioSource sfx;
     public AudioClip hitmarkerSound;
 
+    private bool isReloading = false;
+
     #endregion
 
     #region Monobehaviour Callbacks
 
     private void Start()
     {
+        if (photonView.IsMine) foreach (Weapon a in loadout) a.Init();
+        Equip(1);
+
         hitmarkerImage = GameObject.Find("HUD/Hitmarker/Image").GetComponent<Image>();
         hitmarkerImage.color = new Color(1, 1, 1, 0);//versichert, dass der hitmarker standardgemaess unsichtbar ist
-
-        Equip(0);
     }
 
     void Update()
@@ -48,6 +51,8 @@ public class Loadout : MonoBehaviourPunCallbacks
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) photonView.RPC("Equip", RpcTarget.All, 0); //RpcTarget.All = ALLE die mit dem Client ueber den Server verbunden sind, erfahren von der EquipMethode. Siehe RpcTarget-Dokumentation
             if (Input.GetKeyDown(KeyCode.Alpha2)) photonView.RPC("Equip", RpcTarget.All, 1);
+            
+            if (Input.GetKeyDown(KeyCode.R) && !isReloading && !loadout[currentIndex].IsClipFull() && !loadout[currentIndex].StashEmpty()) StartCoroutine(Reload(loadout[currentIndex].reloadTime)); //Reload
         }
 
         if (currentWeapon)
@@ -55,20 +60,23 @@ public class Loadout : MonoBehaviourPunCallbacks
             if (photonView.IsMine)
             {
                 Aim(Input.GetMouseButton(1));
-                if (Input.GetMouseButtonDown(0) && currentCooldown <= 0)
+                if (Input.GetMouseButtonDown(0) && currentCooldown <= 0 && !isReloading)
                 {
-                    switch (loadout[currentIndex].weaponType)
+                    if (loadout[currentIndex].FireBullet())
                     {
-                        case Weapon.wType.Meele:
-                            break;
-                        case Weapon.wType.Offhand:
-                            photonView.RPC("Shoot", RpcTarget.All);
-                            break;
-                        case Weapon.wType.Mainhand:
-                            photonView.RPC("Shoot", RpcTarget.All);
-                            break;
+                        switch (loadout[currentIndex].weaponType)
+                        {
+                            case Weapon.wType.Meele:
+                                break;
+                            case Weapon.wType.SemiAuto:
+                                photonView.RPC("Shoot", RpcTarget.All);
+                                break;
+                            case Weapon.wType.Automatic: //die waffe ist aufgrund der open aufgefuehrten Input frage nicht moeglich?, CODE MUSS ANGEPASST WERDEN
+                                photonView.RPC("Shoot", RpcTarget.All);
+                                break;
+                        }
                     }
-
+                    else if (!loadout[currentIndex].StashEmpty())StartCoroutine(Reload(loadout[currentIndex].reloadTime));
                 }
                 //cooldown 
                 if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
@@ -92,13 +100,16 @@ public class Loadout : MonoBehaviourPunCallbacks
 
     #endregion
 
-    #region Methoden
+    #region Private-Methoden
 
     [PunRPC] // Methode wird zu allen Systemen vom Client gesendet, die mit ihm durch den Server verknuepft sind => In diesem Fall koennen Gegner einen Waffenwechsel des Klienten sehen
     private void Equip(int _i)
     {
-        if (currentWeapon != null) Destroy(currentWeapon); //ausgeruestete Waffe vorm Equip einer anderen entfernen.
-
+        if (currentWeapon != null)
+        {
+            if (isReloading) StopCoroutine("Reload"); //Wenn gerade nachgeladen wird, wird automatisch der Prozess beendet, da wir ein IEnumerator haben und wir somit durch "StopCoroutine([NAMEN DER METHODE])" den Prozess beenden koennen.
+            Destroy(currentWeapon); //ausgeruestete Waffe vorm Equip einer anderen entfernen.
+        }
         currentIndex = _i;
 
         GameObject newEquipment = Instantiate(loadout[_i].prefab, weaponParent.position, weaponParent.rotation, weaponParent) as GameObject;
@@ -197,5 +208,30 @@ public class Loadout : MonoBehaviourPunCallbacks
         GetComponent<Player>().TakeDamage(_amount, _actor);
     }
 
+    private IEnumerator Reload(float _wait)
+    {
+            isReloading = true;
+            currentWeapon.SetActive(false); //UEBERGANGSWEISE, SOLANGE ES KEINE ANIMATION GIBT
+
+            yield return new WaitForSeconds(_wait); //Wartet die angegebene Zeit bevor das naechste ausgefuehrt wird
+                                                    //"Friert" nur die Methode, nicht das Programm ein
+            loadout[currentIndex].Reload();
+            currentWeapon.SetActive(true); //UEBERGANGSWEISE, SOLANGE ES KEINE ANIMATION GIBT
+            isReloading = false;
+    }
+
     #endregion
+
+    #region Public-Methoden
+
+    public void RefreshAmmo(Text _text) //UI
+    {
+        int clip = loadout[currentIndex].GetClip();
+        int stash = loadout[currentIndex].GetStash();
+
+        _text.text = clip.ToString("D2") + " / " + stash.ToString("D2"); //D2 = 2 Stellig
+    }
+
+    #endregion
+
 }

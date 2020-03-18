@@ -16,9 +16,12 @@ MonoBehaviour:
   name: Hamada Type 1
   firerate: 0.15
   damage: 13
+  ammo: 60
+  clipsize: 10
   bloom: 17
   recoil: 10
   kickback: 0.15
   aimSpeed: 14
+  reloadTime: 1
   prefab: {fileID: 909431690137418416, guid: 6590f3401e543774a8f4e62d4f91ce92, type: 3}
   sound: {fileID: 8300000, guid: 60b6cdcf613880748aa6eb42ce1cc306, type: 3}

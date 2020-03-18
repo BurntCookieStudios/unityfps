@@ -15,12 +15,13 @@ public class Player : MonoBehaviourPunCallbacks
 
     private Transform ui_healthBar;
     private Text ui_Username;
+    private Text ui_Ammo;
 
     private Image damageDisplayImage;
     private float damageDisplayWait;
 
     private Manager manager;
-
+    private Loadout loadout;
     #endregion
 
     #region Monobehaviour Callbacks
@@ -29,6 +30,7 @@ public class Player : MonoBehaviourPunCallbacks
     {
         damageDisplayImage = GameObject.Find("HUD/DamageDisplay/Image").GetComponent<Image>();
         manager = GameObject.Find("Manager").GetComponent<Manager>();
+        loadout = GetComponent<Loadout>();
         currHealth = maxHealth;
         if (photonView.IsMine)
         {
@@ -37,10 +39,13 @@ public class Player : MonoBehaviourPunCallbacks
 
             ui_healthBar = GameObject.Find("HUD/Health/Bar").transform;
             ui_Username = GameObject.Find("HUD/Profile/Username/Text").GetComponent<Text>();
+            ui_Ammo = GameObject.Find("HUD/Ammo/Text").GetComponent<Text>();
 
             photonView.RPC("SyncProfile", RpcTarget.All, MainMenu.myProfile.username, MainMenu.myProfile.level, MainMenu.myProfile.xp, MainMenu.myProfile.currency);
 
+            //UI Refreshes
             RefreshHealthBar();
+            loadout.RefreshAmmo(ui_Ammo);
             ui_Username.text = MainMenu.myProfile.username;
         }
     }
@@ -71,6 +76,8 @@ public class Player : MonoBehaviourPunCallbacks
             {
                 damageDisplayImage.color = Color.Lerp(damageDisplayImage.color, new Color(255, 0, 0, 0), Time.deltaTime * 3); //Lerp = Uebergang
             }
+
+            loadout.RefreshAmmo(ui_Ammo);
         }
     }
 
