@@ -23,6 +23,8 @@ public class Player : MonoBehaviourPunCallbacks
 
     private Manager manager;
     private Loadout loadout;
+
+    private bool pause;
     #endregion
 
     #region Monobehaviour Callbacks
@@ -54,9 +56,6 @@ public class Player : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        //Controls
-        bool pause = Input.GetKeyDown(KeyCode.Escape);
-
         //pause
         if (pause)
         {
@@ -70,6 +69,9 @@ public class Player : MonoBehaviourPunCallbacks
 
         if (photonView.IsMine)
         {
+            //Controls
+            pause = Input.GetKeyDown(KeyCode.Escape);
+
             if (damageDisplayWait > 0)
             {
                 damageDisplayWait -= Time.deltaTime;
