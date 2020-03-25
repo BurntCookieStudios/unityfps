@@ -33,6 +33,7 @@ public class Player : MonoBehaviourPunCallbacks
     {
         damageDisplayImage = GameObject.Find("HUD/DamageDisplay/Image").GetComponent<Image>();
         crosshair = GameObject.Find("HUD/Crosshair");
+        crosshair.SetActive(true);
         manager = GameObject.Find("Manager").GetComponent<Manager>();
         loadout = GetComponent<Loadout>();
         currHealth = maxHealth;

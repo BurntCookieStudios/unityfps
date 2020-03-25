@@ -21,7 +21,7 @@ public class Sway : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        origin_rotation = transform.localRotation;
+        origin_rotation = Quaternion.Euler(0f,0f,0f);
     }
 
     private void Update()

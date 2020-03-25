@@ -126,6 +126,7 @@ public class Loadout : MonoBehaviourPunCallbacks
         if (currentWeapon != null)
         {
             if (isReloading) StopCoroutine("Reload"); //Wenn gerade nachgeladen wird, wird automatisch der Prozess beendet, da wir ein IEnumerator haben und wir somit durch "StopCoroutine([NAMEN DER METHODE])" den Prozess beenden koennen.
+            isReloading = false;
             Destroy(currentWeapon); //ausgeruestete Waffe vorm Equip einer anderen entfernen.
         }
         currentIndex = _i;
@@ -215,8 +216,16 @@ public class Loadout : MonoBehaviourPunCallbacks
         //gun fx
         if (currentWeapon != null)
         {
-            currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.  
-            currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback; //position wird in Update() automatisch zurueck gesetzt.
+            if (isAiming)
+            {
+                currentWeapon.transform.Rotate(-loadout[currentIndex].recoil/4, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.  
+                currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback/2; //position wird in Update() automatisch zurueck gesetzt.
+            }
+            else
+            {
+                currentWeapon.transform.Rotate(-loadout[currentIndex].recoil, 0, 0); //Rotation wird durch Sway automatisch zurueck rotiert.  
+                currentWeapon.transform.position -= currentWeapon.transform.forward * loadout[currentIndex].kickback; //position wird in Update() automatisch zurueck gesetzt.
+            }
         }
     }
 
